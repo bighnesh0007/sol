@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>California Housing Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h2>California Housing Price Prediction</h2>
+    <form id="prediction-form">
+        <label>Median Income:</label>
+        <input type="number" step="0.01" id="median_income" required>
+        
+        <label>House Age:</label>
+        <input type="number" step="0.1" id="house_age" required>
+
+        <label>Average Rooms:</label>
+        <input type="number" step="0.01" id="avg_rooms" required>
+
+        <label>Average Bedrooms:</label>
+        <input type="number" step="0.01" id="avg_bedrooms" required>
+
+        <label>Population:</label>
+        <input type="number" step="1" id="population" required>
+
+        <label>Households:</label>
+        <input type="number" step="1" id="households" required>
+
+        <label>Latitude:</label>
+        <input type="number" step="0.01" id="latitude" required>
+
+        <label>Longitude:</label>
+        <input type="number" step="0.01" id="longitude" required>
+
+        <button type="button" onclick="getPrediction()">Predict</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        function getPrediction() {
+            let inputData = {
+                "features": [
+                    parseFloat(document.getElementById("median_income").value),
+                    parseFloat(document.getElementById("house_age").value),
+                    parseFloat(document.getElementById("avg_rooms").value),
+                    parseFloat(document.getElementById("avg_bedrooms").value),
+                    parseFloat(document.getElementById("population").value),
+                    parseFloat(document.getElementById("households").value),
+                    parseFloat(document.getElementById("latitude").value),
+                    parseFloat(document.getElementById("longitude").value)
+                ]
+            };
+
+            fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(inputData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerText = "Predicted Price: $" + data.predicted_price.toFixed(2);
+            })
+            .catch(error => {
+                document.getElementById("result").innerText = "Error: " + error;
+            });
+        }
+    </script>
+</body>
+</html>
